@@ -1,0 +1,19 @@
+{
+  "name": "trinket",
+  "description": "",
+  "main": "",
+  "license": "MIT",
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "chartist": "^0.10.1",
+    "chart.js": "^2.4.0"
+  }
+}

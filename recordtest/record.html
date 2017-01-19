@@ -1,0 +1,45 @@
+<script src="https://cdn.webrtc-experiment.com/MediaStreamRecorder.js"> </script>
+<script>
+var mediaConstraints = {
+    audio: true
+};
+
+function recordAudio() {
+    navigator.getUserMedia(mediaConstraints, onMediaSuccess, onMediaError);
+}
+
+function onMediaSuccess(stream) {
+    var mediaRecorder = new MediaStreamRecorder(stream);
+    mediaRecorder.mimeType = 'audio/wav'; // check this line for audio/wav
+    mediaRecorder.ondataavailable = function (blob) {
+        // POST/PUT "Blob" using FormData/XHR2
+        var blobURL = URL.createObjectURL(blob);
+        var str = '<button> <a href="' + blobURL + '">' + '</a>  plot sound </button>';
+        var child = document.createElement('div');
+        child.innerHTML = str;
+        replacee = document.getElementById('outer');
+        var parentDiv = document.getElementById('outer').parentNode;
+        parentDiv.appendChild(child);
+        //setTimeout(mediaRecorder.stop(), 3000);
+        mediaRecorder.stop();
+        mediaRecorder.save(blob, 'FileName.wav');
+    };
+    mediaRecorder.start(4000);
+    //setTimeout(mediaRecorder.stop(), 2000);
+    //mediaRecorder.stream.stop();
+    //mediaRecorder.save(bob, 'FileName.wav');
+    
+    //mediaRecorder.stream.stop();
+    //mediaRecorder.stop();
+    
+    //mediaRecorder.save(blob, 'FileName.wav');
+    //
+}
+
+function onMediaError(e) {
+    console.error('media error', e);
+}
+</script>
+<div id='outer'>
+<button id="zhong" onclick="recordAudio()">record for 4 secs</button>
+</div>

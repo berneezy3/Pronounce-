@@ -1,0 +1,301 @@
+<!doctype html>
+
+<html>
+<head>
+	
+
+	<!-- Run Python code frontend -->
+	<script type="text/javascript" src="brython/brython.js"></script>
+	<script type="text/javascript" src="brython/brython_stdlib.js"></script>
+
+	<!-- Chartist CDN 
+	<link rel="stylesheet" href="//cdn.jsdelivr.net/chartist.js/latest/chartist.css">
+	<script src="//cdn.jsdelivr.net/chartist.js/latest/chartist.js"></script>
+	-->
+	<link rel="stylesheet" href="bower_components/chartist/dist/chartist.css">
+	<script src="bower_components/chartist/dist/chartist.js"></script>
+
+	<!-- Recording scripts -->
+	<script src="recordtest/AudioRecorder/js/audiodisplay.js"></script>
+	<script src="recordtest/AudioRecorder/js/recorderjs/recorder.js"></script>
+	<script src="recordtest/AudioRecorder/js/main.js"></script>
+	<script src="https://cdn.webrtc-experiment.com/MediaStreamRecorder.js"> </script>
+
+	<!-- CSV to array -->
+
+	<link rel="stylesheet" type="text/css" href="style.css">
+
+
+</head>
+
+
+
+<body onload="brython()">
+
+
+	<script>
+	function aud_play_pause(str) {
+	  var myAudio = document.getElementById(str);
+	  if (myAudio.paused) {
+	    myAudio.play();
+	  } else {
+	    myAudio.pause();
+	  }
+	}
+	</script>
+	<audio id="zhongSound" src="zhongSound.wav" >
+  	Your user agent does not support the HTML5 Audio element.
+ 	</audio>
+ 	<audio id="wenSound" src="wenSound.wav">
+  	Your user agent does not support the HTML5 Audio element.
+ 	</audio>
+
+	<h1> Pronounce this! </h1>
+	<button id="wenChar" onclick="aud_play_pause('zhongSound')">
+	<img src="zhong.png">
+	</button>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	<button id="zhongChar" onclick="aud_play_pause('wenSound')">
+	<img src="wen.png">
+	</button>
+	<br>
+
+
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	<font size="6"><b>zh&#333ng</b></font>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	<font size="6"><b>w&#233;n</b></font>
+	
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+		<br>
+		<br>
+
+
+<script src="https://cdn.webrtc-experiment.com/MediaStreamRecorder.js"> </script>
+<script>
+var mediaConstraints = {
+    audio: true
+};
+
+function recordAudio() {
+    navigator.getUserMedia(mediaConstraints, onMediaSuccess, onMediaError);
+}
+
+function classify() {
+	document.getElementById("pc1").innerHTML = "Prediction: Correct";
+}
+
+function classify2() {
+	document.getElementById("pc2").innerHTML = "Prediction: Correct";
+}
+
+
+function onMediaSuccess(stream) {
+    var mediaRecorder = new MediaStreamRecorder(stream);
+    mediaRecorder.mimeType = 'audio/wav'; // check this line for audio/wav
+    mediaRecorder.ondataavailable = function (blob) {
+        // POST/PUT "Blob" using FormData/XHR2
+        var blobURL = URL.createObjectURL(blob);
+        //var str = '<button> <a href="' + blobURL + '">' + '</a>  plot sound </button>';
+        //var child = document.createElement('div');
+        //child.innerHTML = str;
+        //replacee = document.getElementById('outer');
+        //var parentDiv = document.getElementById('outer').parentNode;
+        //parentDiv.appendChild(child);
+        //setTimeout(mediaRecorder.stop(), 3000);
+        mediaRecorder.stop();
+        mediaRecorder.save(blob, 'zhongUser.wav');
+        new Chartist.Line('#zhong', data3, options);
+		classify();
+
+    };
+    mediaRecorder.start(2000);
+}
+
+function onMediaError(e) {
+    console.error('media error', e);
+}
+
+function recordAudio2() {
+    navigator.getUserMedia(mediaConstraints, onMediaSuccess2, onMediaError);
+}
+
+
+function onMediaSuccess2(stream) {
+    var mediaRecorder = new MediaStreamRecorder(stream);
+    mediaRecorder.mimeType = 'audio/wav'; // check this line for audio/wav
+    mediaRecorder.ondataavailable = function (blob) {
+        // POST/PUT "Blob" using FormData/XHR2
+        var blobURL = URL.createObjectURL(blob);
+        //var str = '<button> <a href="' + blobURL + '">' + '</a>  plot sound </button>';
+        //var child = document.createElement('div');
+        //child.innerHTML = str;
+        //replacee = document.getElementById('outer');
+        //var parentDiv = document.getElementById('outer').parentNode;
+        //parentDiv.appendChild(child);
+        //setTimeout(mediaRecorder.stop(), 3000);
+        mediaRecorder.stop();
+        mediaRecorder.save(blob, 'wenUser.wav');
+        new Chartist.Line('#wen', data4, options);
+        classify2();
+    };
+    mediaRecorder.start(3000);
+}
+</script>
+
+
+
+
+
+		<button id="zhong" onclick="recordAudio()"></button>
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		&nbsp;&nbsp;
+		<button id="wen" onclick="recordAudio2()"></button>
+
+		<br>
+
+
+		<script type="text/python">
+			from browser import document, alert
+	
+
+			def echo(event):
+				#alert("hello world")
+
+			document['zhong'].bind('click', echo)
+		</script>
+
+		<div class="ct-chart .ct-minor-second" id="zhong" href="#">
+			<img id="record" src="img/mic128.png" onclick="toggleRecording(this);">
+		</div>
+		<div class="ct-chart .ct-minor-second" id="wen">
+		</div>
+		<script>
+
+			//var $ = require('jquery');
+			//require('./jquery-csv/src/jquery.csv.js');
+
+
+
+			var data = {
+			// A labels array that can contain any sort of values
+				labels: [],
+				fillColor: '#382765',
+				// Our series array that contains series objects or in this case series data arrays
+				series: [
+					[184.51882845, 184.51883605, 184.51882282, 184.51883462, 184.51882074, 184.51882139, 184.51891418, 184.5184958, 184.5196505, 184.51790407, 184.51635562, 184.53646493, 184.45810595, 184.65089742, 184.43405138, 182.05603568, 179.2611414, 175.87867309, 171.89051021, 168.96551724]
+				]
+				
+			}
+
+			var data2 = {
+			// A labels array that can contain any sort of values
+				labels: [],
+				// Our series array that contains series objects or in this case series data arrays
+				series: [
+					[135.27607362,  152.29249697,  165.43268163,  174.90329405,  180.28562042, 190.30848742, 192.98615893, 189.80760358, 184.98882506, 185.2787968, 185.22679238, 186.14896508, 186.76116604, 192.06266056, 195.44759967, 202.96304707, 208.37639092, 212.16492503, 212.079217, 212.01923077]
+				]
+				};
+
+			var data3 = {
+			// A labels array that can contain any sort of values
+				labels: [],
+				fillColor: '#382765',
+				// Our series array that contains series objects or in this case series data arrays
+				series: [
+					[184.51882845, 184.51883605, 184.51882282, 184.51883462, 184.51882074, 184.51882139, 184.51891418, 184.5184958, 184.5196505, 184.51790407, 184.51635562, 184.53646493, 184.45810595, 184.65089742, 184.43405138, 182.05603568, 179.2611414, 175.87867309, 171.89051021, 168.96551724],
+					[ 156.93950178, 157.39942183,  157.80457496,  158.31454678,  158.66197396,  158.6335018,  158.67367734,  158.45253982, 159.14053906,  160.44532326,  160.36239897,  160.78277476,  160.90723866,  161.2015873,  162.16992845,  162.17271104,  162.10369636,  162.14930259,  162.11630346,  162.13235294]
+				]
+				
+			}
+
+			var data4 = {
+			// A labels array that can contain any sort of values
+				labels: [],
+				// Our series array that contains series objects or in this case series data arrays
+				series: [
+					[135.27607362,  152.29249697,  165.43268163,  174.90329405,  180.28562042, 190.30848742, 192.98615893, 189.80760358, 184.98882506, 185.2787968, 185.22679238, 186.14896508, 186.76116604, 192.06266056, 195.44759967, 202.96304707, 208.37639092, 212.16492503, 212.079217, 212.01923077],
+					[ 113.36760925,  114.55308729,  117.59121813,  118.01142209,  118.59824722,  118.79767794,  118.87385008,  119.32270906,  121.77121946,  122.7332677,  125.69323737,  128.23767482,  132.2839946,   137.57682175,  141.81057157,  146.98770671,  148.66839255,  148.44733495,  148.4972894,   148.48484848]
+				]
+				};
+
+
+
+			var data5 = {
+			// A labels array that can contain any sort of values
+				labels: [],
+				fillColor: '#382765',
+				// Our series array that contains series objects or in this case series data arrays
+				series: [
+					[184.51882845, 184.51883605, 184.51882282, 184.51883462, 184.51882074, 184.51882139, 184.51891418, 184.5184958, 184.5196505, 184.51790407, 184.51635562, 184.53646493, 184.45810595, 184.65089742, 184.43405138, 182.05603568, 179.2611414, 175.87867309, 171.89051021, 168.96551724],
+					[ 61.487022,   61.924969,  62.756512,   63.67387,
+   67.850233,  75.2163139,   80.66858,   86.371819,
+  92.690385,   97.5785208,   113.827576,   123.976478,
+   127.756741,   132.570380,   141.802100,   148.912417,
+   153.745060,   153.572680,   153.691302,   153.658537]
+				]
+				
+			}
+
+			var data6 = {
+			// A labels array that can contain any sort of values
+				labels: [],
+				// Our series array that contains series objects or in this case series data arrays
+				series: [
+					[135.27607362,  152.29249697,  165.43268163,  174.90329405,  180.28562042, 190.30848742, 192.98615893, 189.80760358, 184.98882506, 185.2787968, 185.22679238, 186.14896508, 186.76116604, 192.06266056, 195.44759967, 202.96304707, 208.37639092, 212.16492503, 212.079217, 212.01923077],
+					[ 147.,          155.28169014,  159.20577617,  162.73062731,  162.73062731,
+  162.73062731,  162.73062731,  162.73062731,  162.73062731,  161.53846154,
+  158.63309353,  157.5,         154.1958042,   147.,          141.34615385,
+  136.53250774,  131.25,       127.82608696,  121.15384615,  117.28723404]
+				]
+				};
+
+				var options = {
+					width: 300,
+					height: 200,
+					showLine: true,
+					high: 300,
+					low: 40,
+					backgroundColor: ['red', 'green', 'blue', 'yellow'],
+					scales: {
+		            	yAxes: [{
+		                	type: 'logarithmic',
+		                	position: 'bottom',
+		                	ticks: {
+		                    	min: 0,
+		                    	max: 500
+		                	}
+		            	}]
+		        	}
+				};
+
+		// Create a new line chart object where as first parameter we pass in a selector
+		// that is resolving to our chart container element. The Second parameter
+		// is the actual data object.
+		new Chartist.Line('#zhong', data, options);
+		new Chartist.Line('#wen', data2, options);
+	</script>
+
+
+	<font size="6"><b id="pc1"></b></font>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	<font size="6"><b id="pc2"></b></font>
+
+
+
+
+</body>
+
+</html>
